@@ -1,0 +1,37 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens. Values mirror client.config.ts theme — kept in CSS too so the
+ * first paint is correct before JS. A second client overrides these here.
+ */
+:root {
+  --color-brand: #c81e1e;
+  --color-brand-foreground: #ffffff;
+  --color-bg: #ffffff;
+  --color-fg: #0a0a0a;
+  --color-muted: #6b7280;
+  --font-display: 'Cinzel', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-brand: var(--color-brand);
+  --color-brand-foreground: var(--color-brand-foreground);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}

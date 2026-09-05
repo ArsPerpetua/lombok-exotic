@@ -1,0 +1,63 @@
+name: Deploy (VPS)
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 11 }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Build in CI, never on the 2-vCPU VPS (OOM risk).
+      - run: pnpm build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          BUILD_STANDALONE: '1'
+
+      - name: Package build
+        run: |
+          tar -czf lex-build.tar.gz \
+            apps/lombok-exotic/.next \
+            apps/lombok-exotic/public \
+            apps/lombok-exotic/package.json \
+            packages/core \
+            deploy \
+            node_modules \
+            package.json pnpm-lock.yaml pnpm-workspace.yaml
+
+      - name: Copy to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: lex-build.tar.gz
+          target: /tmp/
+
+      - name: Release
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            # Use the deploy script bundled in THIS build (not the running release).
+            tar -xzf /tmp/lex-build.tar.gz -C /tmp deploy/deploy.sh
+            bash /tmp/deploy/deploy.sh

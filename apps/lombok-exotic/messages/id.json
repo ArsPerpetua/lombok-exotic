@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "catalog": "Katalog",
+    "groupOrder": "Pesanan Rombongan",
+    "about": "Tentang",
+    "blog": "Artikel",
+    "cart": "Keranjang",
+    "trackOrder": "Lacak Pesanan"
+  },
+  "home": {
+    "heroTitle": "Oleh-Oleh Khas Lombok, Kirim ke Rumah",
+    "heroSubtitle": "Tenun ikat, perhiasan perak, kaos, dan makanan khas dari Senggigi. Pesan online, kirim ke seluruh Indonesia.",
+    "shopNow": "Belanja Sekarang",
+    "groupCta": "Pesanan Rombongan / Agen Wisata",
+    "featured": "Produk Pilihan",
+    "emptyCatalog": "Katalog sedang disiapkan. Hubungi kami lewat WhatsApp untuk pemesanan."
+  },
+  "group": {
+    "title": "Pesanan Rombongan",
+    "lead": "Untuk tour leader & agen wisata: kirim rencana belanja rombongan sebelum bus tiba. Kami siapkan paket, kamu tinggal ambil."
+  },
+  "footer": {
+    "rights": "Seluruh hak cipta dilindungi.",
+    "hkiNote": "Merek terdaftar HKI di Kemenkumham RI."
+  },
+  "common": {
+    "from": "mulai dari",
+    "language": "Bahasa"
+  }
+}

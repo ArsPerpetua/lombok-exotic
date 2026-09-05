@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "catalog": "Catalog",
+    "groupOrder": "Group Orders",
+    "about": "About",
+    "blog": "Articles",
+    "cart": "Cart",
+    "trackOrder": "Track Order"
+  },
+  "home": {
+    "heroTitle": "Lombok Souvenirs, Shipped to Your Door",
+    "heroSubtitle": "Handwoven ikat, silver jewellery, tees and local delicacies from Senggigi. Order online, delivered across Indonesia.",
+    "shopNow": "Shop Now",
+    "groupCta": "Group / Travel Agent Orders",
+    "featured": "Featured Products",
+    "emptyCatalog": "The catalog is being set up. Reach us on WhatsApp to place an order."
+  },
+  "group": {
+    "title": "Group Orders",
+    "lead": "For tour leaders & travel agents: send your group's shopping plan before the bus arrives. We pre-pack the packages, you just pick them up."
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "hkiNote": "Trademark registered with the Indonesian Ministry of Law (HKI)."
+  },
+  "common": {
+    "from": "from",
+    "language": "Language"
+  }
+}

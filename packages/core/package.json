@@ -1,0 +1,45 @@
+{
+  "name": "@lombok-exotic/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config/index.ts",
+    "./db": "./src/db/index.ts",
+    "./db/schema": "./src/db/schema/index.ts",
+    "./auth": "./src/auth/index.ts",
+    "./payment": "./src/payment/index.ts",
+    "./shipping": "./src/shipping/index.ts",
+    "./email": "./src/email/index.ts",
+    "./jobs": "./src/jobs/index.ts",
+    "./money": "./src/money.ts"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "tsx src/db/seed.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "better-auth": "1.7.2",
+    "drizzle-orm": "^0.38.3",
+    "nanoid": "^5.0.9",
+    "pg": "^8.13.1",
+    "pg-boss": "^10.1.6",
+    "resend": "^4.0.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
+    "dotenv": "^16.4.7",
+    "drizzle-kit": "^0.30.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
