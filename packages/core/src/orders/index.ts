@@ -31,3 +31,17 @@ export {
 } from './payment-state';
 export { findStuckOrders, findExpiredHolds, findOrphanedOrders } from './workers';
 export { repayOrder, type RepayResult, type RepayError } from './repay';
+export {
+  dashboardStats,
+  listOrders,
+  getAdminOrderDetail,
+  transitionOrder,
+  recordShipment,
+  ORDER_TRANSITIONS,
+  type OrderListQuery,
+  type AdminActor,
+  type TransitionResult,
+  type TransitionError,
+  type ShipmentInput,
+  type ShipmentResult,
+} from './admin';

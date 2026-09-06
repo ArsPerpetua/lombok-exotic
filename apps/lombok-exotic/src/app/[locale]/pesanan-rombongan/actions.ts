@@ -2,7 +2,7 @@
 
 import { db, schema } from '@lombok-exotic/core/db';
 import { groupPreorderReference } from '@lombok-exotic/core';
-import { enqueue, QUEUES } from '@lombok-exotic/core/jobs';
+import { queueNotification } from '@lombok-exotic/core/notifications';
 import { groupPreorderInput, toWaDigits } from '@/lib/validators';
 
 export type GroupPreorderState =
@@ -40,15 +40,16 @@ export async function submitGroupPreorder(
       packageNotes: input.packageNotes || null,
     });
 
-    // Best-effort: notify staff. Never block the customer on the queue.
+    // Best-effort: outbox row for staff. Never block the customer on it.
     try {
-      await enqueue(QUEUES.notificationsDeliver, {
+      await queueNotification(db, {
         templateKey: 'group_preorder.new_internal',
+        recipient: 'admin',
+        payload: { reference },
         entityType: 'group_preorder',
-        reference,
       });
     } catch (err) {
-      console.warn('[group-preorder] enqueue notification failed:', err);
+      console.warn('[group-preorder] queue notification failed:', err);
     }
 
     return { status: 'success', reference };

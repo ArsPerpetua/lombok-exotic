@@ -33,3 +33,6 @@ Thumbs.db
 coverage/
 .turbo/
 *.local
+
+# runtime product image uploads (MVP local-disk store)
+apps/lombok-exotic/public/uploads/

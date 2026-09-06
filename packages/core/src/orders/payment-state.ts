@@ -1,11 +1,12 @@
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { db, schema } from '../db/index';
 import { enqueue, QUEUES } from '../jobs/index';
 import { getPaymentProvider } from '../payment/index';
 import type { WebhookVerification } from '../payment/provider';
+import { queueNotification } from '../notifications/deliver';
 import { type Executor, commitSale, releaseStock } from './stock';
 
-const { orders, orderItems, orderEvents, payments, customers, notifications } = schema;
+const { orders, orderItems, orderEvents, payments, customers } = schema;
 
 export type ApplyOutcome =
   | 'paid'
@@ -121,11 +122,11 @@ export async function applyPaymentUpdate(v: WebhookVerification): Promise<ApplyR
           actorLabel: 'system',
         });
         await queueNotification(tx, {
-          channel: 'whatsapp_link',
           templateKey: 'order.payment_amount_mismatch',
-          orderId,
-          orderNumber: order.orderNumber,
           recipient: 'admin',
+          payload: { orderId, orderNumber: order.orderNumber },
+          entityType: 'order',
+          entityId: orderId,
         });
         return { outcome: 'amount_mismatch', orderNumber: order.orderNumber };
       }
@@ -177,20 +178,20 @@ export async function applyPaymentUpdate(v: WebhookVerification): Promise<ApplyR
           actorLabel: 'system',
         });
         await queueNotification(tx, {
-          channel: 'whatsapp_link',
           templateKey: 'order.oversold_needs_restock',
-          orderId,
-          orderNumber: order.orderNumber,
           recipient: 'admin',
+          payload: { orderId, orderNumber: order.orderNumber },
+          entityType: 'order',
+          entityId: orderId,
         });
       }
 
       await queueNotification(tx, {
-        channel: 'email',
         templateKey: 'order.paid',
-        orderId,
-        orderNumber: order.orderNumber,
         recipient: await customerEmail(tx, order.customerId),
+        payload: { orderId, orderNumber: order.orderNumber },
+        entityType: 'order',
+        entityId: orderId,
       });
 
       if (order.tourLeaderId) {
@@ -360,26 +361,3 @@ async function customerEmail(tx: Executor, customerId: string): Promise<string> 
   return c?.email ?? '';
 }
 
-async function queueNotification(
-  tx: Executor,
-  n: {
-    channel: string;
-    templateKey: string;
-    orderId: string;
-    orderNumber: string;
-    recipient: string;
-  },
-): Promise<void> {
-  await tx
-    .insert(notifications)
-    .values({
-      channel: n.channel,
-      templateKey: n.templateKey,
-      recipient: n.recipient || 'admin',
-      payload: { orderId: n.orderId, orderNumber: n.orderNumber },
-      entityType: 'order',
-      entityId: n.orderId,
-      status: 'pending',
-    })
-    .onConflictDoNothing();
-}

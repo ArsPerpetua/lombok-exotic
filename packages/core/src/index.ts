@@ -64,9 +64,22 @@ export type {
   TrackedOrder,
 } from './orders/index';
 export { getSetting, getNumberSetting } from './settings';
+export { writeAudit } from './audit';
+export {
+  slugify,
+  listAdminProducts,
+  getAdminProduct,
+  listCategoriesForAdmin,
+  saveProduct,
+  saveVariant,
+  deactivateVariant,
+  attachImage,
+  detachImage,
+} from './catalog/index';
 
 export { sendEmail, waMeLink } from './email/index';
 export { enqueue, getBoss, stopBoss, QUEUES } from './jobs/index';
+export { deliverPendingNotifications, queueNotification, renderEmail } from './notifications/index';
 
 export { assertIdr, formatIdr, discountAmount, sumLines } from './money';
 export type { Idr } from './money';

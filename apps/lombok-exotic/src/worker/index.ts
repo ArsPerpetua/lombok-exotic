@@ -15,6 +15,7 @@ import {
   findStuckOrders,
   reconcilePendingOrder,
 } from '@lombok-exotic/core/orders';
+import { deliverPendingNotifications } from '@lombok-exotic/core/notifications';
 
 async function forEach(nums: string[], fn: (n: string) => Promise<unknown>, label: string) {
   for (const n of nums) {
@@ -30,10 +31,9 @@ async function forEach(nums: string[], fn: (n: string) => Promise<unknown>, labe
 async function main() {
   const boss = await getBoss();
 
-  await boss.work(QUEUES.notificationsDeliver, async (jobs) => {
-    for (const job of jobs) console.log('[worker] notifications.deliver', job.data);
-    // TODO(week 4): load the notification row, render the template, send via
-    // Resend, mark sent / retry with backoff.
+  await boss.work(QUEUES.notificationsDeliver, async () => {
+    const r = await deliverPendingNotifications(20);
+    if (r.processed) console.log('[worker] notifications.deliver', r);
   });
 
   await boss.work(QUEUES.paymentsReconcile, async () => {
@@ -64,6 +64,7 @@ async function main() {
   // Recurring schedules (pg-boss cron).
   await boss.schedule(QUEUES.paymentsReconcile, '*/5 * * * *', {});
   await boss.schedule(QUEUES.stockReleaseHolds, '*/10 * * * *', {});
+  await boss.schedule(QUEUES.notificationsDeliver, '*/2 * * * *', {});
 
   console.log('[worker] running. queues:', Object.values(QUEUES).join(', '));
 }

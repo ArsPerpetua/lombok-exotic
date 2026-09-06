@@ -37,3 +37,22 @@ export async function requireCapability(capability: Capability): Promise<Session
   authorize(user, capability);
   return user;
 }
+
+export interface AdminActor {
+  userId: string;
+  label: string;
+  ip: string | null;
+  userAgent: string | null;
+}
+
+/** `requireCapability` + the actor shape the `core` admin mutations + `audit_log` want. */
+export async function requireAdminActor(capability: Capability): Promise<AdminActor> {
+  const user = await requireCapability(capability);
+  const h = await headers();
+  return {
+    userId: user.id,
+    label: user.name || user.email,
+    ip: h.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null,
+    userAgent: h.get('user-agent'),
+  };
+}

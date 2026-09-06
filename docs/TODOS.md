@@ -63,8 +63,8 @@ then = feature build (Weeks 2-5).
       (`lib/catalog.ts`: `getCategories` / `getCatalogPage` / `getProductDetail`;
       server-rendered filter+sort chips via `?kategori/urut/hal`; client
       `ProductDetail` variant picker + gallery + WhatsApp order deep-link)
-- [ ] Image upload in admin (start with local disk or Cloudflare R2) — needs admin (Week 4).
-      Storefront `<img>` slots + JSON-LD `image[]` are wired; empty until real photos land.
+- [x] Image upload in admin — `POST /api/admin/upload` (local disk `public/uploads/products/`,
+      gitignored; needs a volume in prod / swap for R2), wired into the Product CMS image manager.
 - [x] Bundle rendering (price/stock derived from components) — `bundleBreakdown()`:
       component list, individual-price total, savings vs bundle price, `maxSets` buildable
 - [x] JSON-LD `Product` + canonical + OG per product; `sitemap.ts` (static + all product
@@ -134,16 +134,45 @@ FakePaymentProvider for 3.2a). Build order 3.2a → 3.2b → 3.2c.
       to merge into in MVP). Moved out of Week 3.
 
 ### Week 4 — admin
-- [ ] `better-auth` login page, session in admin layout, `requireCapability`
-- [ ] Product CMS (CRUD + variants + weight validation + images)
-- [ ] Order management: list, detail, status transitions, `order_events` timeline
-- [ ] Manual resi entry + shipment record
-- [ ] Invoice PDF per order (react-pdf or a print route)
-- [ ] `notifications.deliver` worker: Resend templates (received/paid/shipped) +
-      wa.me deep-link buttons in admin
-- [ ] Banner CMS, simple voucher CRUD
-- [ ] Dashboard: revenue (day/week/month), order count, top products, low stock
-- [ ] `audit_log` writes on every admin mutation
+- [x] `better-auth` login page (`/admin/login`), session gate in `app/admin/(app)/layout.tsx`
+      (RBAC via `isAdminRole` + `isActive`; route-group split so `/admin/login` isn't in the
+      redirect loop), `requireCapability` / `requireAdminActor`, sign-out, `/admin` excluded
+      from i18n middleware. Login form is `signIn.email` (verify in a real browser — flaky in
+      headless).
+- [x] Product CMS — `core/catalog/admin.ts` (`listAdminProducts` / `getAdminProduct` /
+      `saveProduct` / `saveVariant` / `deactivateVariant` (soft) / `attachImage` / `detachImage`,
+      `slugify`, auto-recompute `priceFrom`). `/admin/produk` list + `/admin/produk/[id]` editor
+      (`baru` = create → redirect to edit) with `<ProductFields>` / `<VariantEditor>` /
+      `<ImageManager>`. Weight `> 0` enforced (client `required` + `weight_invalid` guard).
+      `POST /api/admin/upload` (local disk, gitignored). e2e-smoked: create → variant →
+      shows in storefront catalog + PDP; audit rows written.
+- [x] Order management: list (status filter, search, pagination), detail (customer, address,
+      items, payment, shipping, timeline), guarded state machine transitions, `order_events`.
+- [x] Manual resi entry + shipment record (`recordShipment` → `shipments` + `shipment_events`,
+      auto-transition to `shipped`; customer `/lacak` reflects it).
+- [x] Invoice per order — print route `/admin/pesanan/[n]/invoice` under a sidebar-less
+      `(print)` route group; `<PrintButton>` → `window.print()` (browser save-as-PDF).
+      Store header + pembeli/kirim-to + line items + totals + paid/unpaid note. "Faktur"
+      link on the order detail.
+- [x] `notifications.deliver` worker — `core/notifications/` (`deliverPendingNotifications`
+      polls the outbox, renders `templates.ts`, sends via Resend or **dry-run logs** when
+      `RESEND_API_KEY` is a dev key / `NOTIFICATIONS_DRY_RUN=1`, retries failed ≤5×, marks
+      sent/failed/skipped). Scheduled every 2 min. Templates: `order.{received,paid,shipped}`
+      (customer) + `order.payment_amount_mismatch` / `order.oversold_needs_restock` /
+      `group_preorder.new_internal` (admin, recipient `ADMIN_ALERT_EMAIL`). Shared
+      `queueNotification(exec, …)` writes the outbox row in-txn (used by `payment-state.ts`,
+      `admin.ts` recordShipment → `order.shipped`, the group-preorder form). **wa.me deep-link
+      buttons** on the admin order detail (Konfirmasi pembayaran / Info pengiriman / Chat umum).
+      e2e-smoked: paid → `order.paid` queued+delivered; resi → `order.shipped` queued+delivered;
+      re-run deliver = 0 processed.
+- [~] Voucher CRUD done — `core/marketing/admin.ts` (`listVouchers`/`getVoucher`/`saveVoucher`
+      (code clash check)/`toggleVoucher`), `/admin/voucher` list + `/admin/voucher/[id]` form
+      (`baru` = create), audit rows. `marketing:write` gate. **Banner CMS: core fns exist
+      (`listBanners`/`saveBanner`/`deleteBanner`) but no admin UI + storefront doesn't render
+      banners yet (static hero).** Voucher-at-checkout still deferred.
+- [x] Dashboard: revenue (day/7d/30d), orders-by-status, recent orders, low stock, top products.
+- [~] `audit_log` writes — done for orders (transition, shipment) + products (create/update,
+      variant create/update/deactivate). Extend as more admin mutations land.
 
 ### Week 5 — differentiator + content + polish
 - [ ] Group pre-order: admin queue, line items, quote → order, quote email + wa.me,
