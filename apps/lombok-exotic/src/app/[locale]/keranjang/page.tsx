@@ -1,10 +1,47 @@
-import { setRequestLocale } from 'next-intl/server';
-import { ComingSoon } from '@/components/coming-soon';
+import type { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getCartView } from '@/lib/cart';
+import { CartPageClient } from '@/components/cart-page';
 
-export const metadata = { title: 'Keranjang' };
+export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'cart' });
+  return { title: t('title'), robots: { index: false } };
+}
 
 export default async function CartPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <ComingSoon title="Keranjang" note="Cart + guest checkout — MVP week 3." />;
+  const t = await getTranslations('cart');
+  const cart = await getCartView();
+
+  return (
+    <div>
+      <div className="mx-auto max-w-5xl px-6 pt-12">
+        <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      </div>
+      <CartPageClient
+        initial={cart}
+        labels={{
+          empty: t('empty'),
+          browse: t('browse'),
+          adjusted: t('adjusted'),
+          unit: t('unit'),
+          remove: t('remove'),
+          subtotal: t('subtotal'),
+          totalWeight: t('totalWeight'),
+          shippingNote: t('shippingNote'),
+          checkout: t('checkout'),
+          stockLeft: t('stockLeft'),
+          genericError: t('genericError'),
+        }}
+      />
+    </div>
+  );
 }

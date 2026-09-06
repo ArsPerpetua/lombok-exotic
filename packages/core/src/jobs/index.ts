@@ -18,6 +18,9 @@ export const QUEUES = {
   paymentsReconcile: 'payments.reconcile',
   shippingPollTracking: 'shipping.poll-tracking',
   stockReleaseHolds: 'stock.release-holds',
+  // Declared now so the paid-order transition can enqueue without reopening the
+  // audited state machine in Week 5; handler is a stub until then.
+  commissionsAccrue: 'commissions.accrue',
 } as const;
 
 let boss: PgBoss | null = null;

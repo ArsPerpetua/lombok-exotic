@@ -25,8 +25,9 @@ Living list. Every deferred decision lives here — vague intentions don't count
       per variant** (Paralens).
 - [ ] Biteship: confirm which couriers actually pick up from Senggigi/Mataram and
       typical lead times; set `STORE_ORIGIN_AREA_ID`.
-- [ ] Brand assets: convert `assets/logo-*.pdf` to PNG/SVG at
-      `apps/lombok-exotic/public/brand/`.
+- [x] Brand assets: `assets/logo-*.pdf` → `public/brand/logo-{light,dark}.{svg,png}`
+      (`assets/convert-logos.py`, pymupdf+PIL). Wired into header (light), hero + footer
+      (dark, silver linework recoloured from the light source so PNG stays transparent).
 
 ## MVP build plan (5 weeks)
 
@@ -38,31 +39,99 @@ Living list. Every deferred decision lives here — vague intentions don't count
 - [x] Local dev DB: PostgreSQL 17 `lombok_exotic` (postgres/12345), migrated + seeded
       (7 products / 12 variants / owner login). App verified: `/id`, `/en`,
       `/api/health` (db:ok), catalog from DB, better-auth sign-in returns `role`.
-- [ ] CI actually running on GitHub (push repo, add secrets)
+- [ ] Push repo to GitHub (`ArsPerpetua/lombok-exotic`) — CI workflow runs on push
+      (approved 2026-09-06; needs empty repo created + auth as ArsPerpetua)
+
+**Deploy/infra DEFERRED (2026-09-06):** client's boss is buying a *separate*
+dedicated VPS for Lombok Exotic. The existing KVM 2 (`srv1921909`, 31.97.48.99)
+is already running 3 unrelated apps (SIKAPKI NTB, "Lombok Paradise Tours" on
+`lombok.sikapki-ntb.tech`, "Cinta Holidays" on `cinta.sikapki-ntb.tech`) — do
+NOT deploy here, and `lombok.sikapki-ntb.tech` is taken. Redo the items below
+against the new box when it lands. Neon still the plan for the DB. Focus until
+then = feature build (Weeks 2-5).
 - [ ] Provision **Neon** DB for staging/prod (local Postgres is dev-only), point
       `DATABASE_URL` at it, `pnpm db:migrate && db:seed`
-- [ ] VPS: create firewall group (22 from admin IP, 80, 443), Nginx, certbot,
-      PM2, `/etc/lombok-exotic/web.env`, deploy user + SSH key
+- [ ] New VPS: firewall group (22 from admin IP, 80, 443), Nginx, certbot,
+      systemd units (match existing box's pattern — no PM2), env file, deploy user + SSH key
+- [ ] Pick + point a demo subdomain (own domain, or a fresh `*.sikapki-ntb.tech` — NOT `lombok.`)
 - [ ] Cloudflare in front (proxied DNS, cache rules for `/_next/static`)
 - [ ] Sentry (web + worker), UptimeRobot on `/api/health`
-- [ ] First deploy via GitHub Actions
+- [ ] First deploy via GitHub Actions (verify standalone boots on Node 20 — new box likely matches)
 
 ### Week 2 — catalog
-- [ ] Category browse + filters + pagination, product detail with variant picker
-- [ ] Image upload in admin (start with local disk or Cloudflare R2)
-- [ ] Bundle rendering (price/stock derived from components)
-- [ ] JSON-LD `Product`, sitemap, robots, canonical, OG per product
-- [ ] Real EN/ID copy for static strings
+- [x] Category browse + filters + pagination, product detail with variant picker
+      (`lib/catalog.ts`: `getCategories` / `getCatalogPage` / `getProductDetail`;
+      server-rendered filter+sort chips via `?kategori/urut/hal`; client
+      `ProductDetail` variant picker + gallery + WhatsApp order deep-link)
+- [ ] Image upload in admin (start with local disk or Cloudflare R2) — needs admin (Week 4).
+      Storefront `<img>` slots + JSON-LD `image[]` are wired; empty until real photos land.
+- [x] Bundle rendering (price/stock derived from components) — `bundleBreakdown()`:
+      component list, individual-price total, savings vs bundle price, `maxSets` buildable
+- [x] JSON-LD `Product` + canonical + OG per product; `sitemap.ts` (static + all product
+      URLs, both locales) + `robots.ts`. (Catalog/category-page JSON-LD can come later.)
+- [~] `catalog.*` / `product.*` message namespaces added (id + en). Broader "real copy"
+      pass for all static strings still pending.
+- [x] Brand logo wired: `SiteHeader` (light), homepage hero + `SiteFooter` (dark).
+      Text wordmark/tagline lines replaced by the logo image (logo already contains both).
+- [x] Homepage rebuilt (benchmarked vs omiyago.com, hero kept). New sections:
+      trust strip, Belanja per Kategori (`getCategories`), Produk Pilihan (real cards
+      + price + bundle badge + hover), Kenapa Lombok Exotic (dark, 3 Lombok-specific
+      differentiators), Pesanan Rombongan band (the differentiator omiyago lacks),
+      brand-story + latest-article teaser (`lib/content.ts` `getLatestArticles`),
+      WhatsApp contact band. `home.*` i18n expanded (id + en). Product photos still
+      pending (client dep) — cards show grey placeholders.
 
 ### Week 3 — cart, checkout, payment
-- [ ] Cart server actions (add/update/remove), cookie token, merge on login
-- [ ] Stock reservation with TTL hold + `stock.release-holds` worker
-- [ ] Checkout: address form + Biteship area lookup + rate selection
-- [ ] `POST /api/checkout` → order + `PaymentProvider.createCharge` (Midtrans Snap)
-- [ ] `POST /api/webhooks/midtrans`: signature verify, `payment_events` dedupe,
-      order state machine, enqueue notifications
-- [ ] `payments.reconcile` worker (poll stuck orders) — the silent-failure net
-- [ ] Order confirmation page + `/lacak` order lookup (number + WA)
+- [~] Cart server actions (add/update/remove/get), httpOnly cookie token (`le_cart`),
+      guest carts persisted. **Done:** `lib/cart.ts` (getCartView / getOrCreateCartForMutation
+      / getCartViewByToken / getCartCount), `keranjang/actions.ts`, real `/keranjang` page
+      (`components/cart-page.tsx`), add-to-cart + qty stepper on PDP, header count badge
+      (`components/cart-badge.tsx` + `lib/cart-events.ts`), stock-aware clamping, `catalog.ts`
+      unchanged. Tested add/merge/update/remove/clamp via DB. **Still TODO: merge guest cart
+      on login** (needs auth session in storefront — deferred with checkout).
+**Week 3 Part 2 — checkout + payment spine.** Full plan reviewed + approved via
+/autoplan: `docs/plans/week3-part2-checkout-payment.md` (23 amendments folded —
+race-safe transitions, provider-checked cancellation, Midtrans line-item sum,
+cart conversion, PII scoping, phone normalization, pay-after-expiry, 24h expiry,
+FakePaymentProvider for 3.2a). Build order 3.2a → 3.2b → 3.2c.
+
+- [~] **3.2a — checkout → order (happy path).** **Done:** `core/orders/{stock,checkout,lookup}.ts`,
+      `core/phone.ts` (+7 tests), `core/settings.ts`, `core/shipping/origin.ts`,
+      `FakePaymentProvider` + `FakeShippingProvider` (`*_PROVIDER=fake`, prod-ignored),
+      `/api/checkout` + `/api/shipping/{areas,rates}`, `<CheckoutForm>` (contact + address +
+      Biteship autocomplete + manual postal fallback + rate select + double-submit guard),
+      real `/checkout` page, read-only `/pesanan/[orderNumber]` (PII behind `?wa=` last-4),
+      `checkout.*`/`order.*` i18n, `midtrans.verifyWebhook` tests (+6). Cart → `converted` in
+      txn A; server-side shipping re-quote (A4) verified rejecting a tampered price;
+      2-min idempotency verified. e2e smoke through the fake providers: order + payment +
+      reservation land correctly. **Still TODO: DB integration tests** (`stock.test.ts`
+      concurrent reserve, `checkout.test.ts`) — needs a vitest-config split so
+      `*.integration.test.ts` stays out of the no-DB CI run.
+- [~] **3.2b — the money-safety net.** **Done:** `core/orders/payment-state.ts`
+      (`applyPaymentUpdate` race-safe conditional-UPDATE state machine + `reconcilePendingOrder`
+      + `expireStaleHold` (checks provider first, A16) + `cancelOrphanedOrder`),
+      `core/orders/workers.ts` (`findStuckOrders`/`findExpiredHolds`/`findOrphanedOrders`),
+      `core/orders/repay.ts` (A19, suffixed ref, re-reserve, cap 3), `commissions.accrue`
+      queue declared (stub handler), `/api/webhooks/midtrans` (verify → `payment_events`
+      dedupe → apply, always 200 except 500-on-throw), `/api/orders/[n]/{status,repay}`,
+      worker handlers wired + scheduled (5min / 10min), confirmation-page
+      `<OrderStatusWatcher>` (poll 90s + Cek status + repay + dev fake-pay button),
+      `order.*` i18n. **e2e-smoked green:** settlement→paid+commitSale+movement+event+notif,
+      duplicate webhook→`already_applied`, expire→cancel+release, amount mismatch→held
+      (A17), worker selection, repay-from-cancelled→re-reserve, retry-webhook settles.
+      **Still TODO: real Midtrans sandbox wiring** (dashboard notification URL + local
+      tunnel — currently `PAYMENT_PROVIDER=fake`), **DB integration tests** (`payment-state`,
+      `stock`, `checkout` — need the `*.integration.test.ts` vitest split).
+- [x] **3.2c — lookup + polish.** `core/orders/lookup.ts` `findOrderForTracking`
+      (clean `TrackedOrder` DTO: status + timeline from `order_events` + shipment
+      tracking) + `normalizeOrderNumber`. `/lacak` real page + `lacak/actions.ts`
+      (`lookupOrderAction`, two-factor: order number + WA last-4, crude per-IP
+      limiter) + `components/track-form.tsx` (`useActionState`, vertical timeline).
+      `track.*` i18n. Manual postal-code shipping fallback already shipped in 3.2a's
+      `<CheckoutForm>` (`SHIPPING_PROVIDER=fake` handles `destinationPostalCode`).
+      e2e-smoked: correct number+phone → timeline; wrong phone → "tidak ditemukan"; EN ok.
+- [ ] Guest-cart merge on login → **Phase 2** (needs customer accounts; nothing
+      to merge into in MVP). Moved out of Week 3.
 
 ### Week 4 — admin
 - [ ] `better-auth` login page, session in admin layout, `requireCapability`

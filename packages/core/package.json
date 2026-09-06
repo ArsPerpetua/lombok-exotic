@@ -11,6 +11,9 @@
     "./auth": "./src/auth/index.ts",
     "./payment": "./src/payment/index.ts",
     "./shipping": "./src/shipping/index.ts",
+    "./orders": "./src/orders/index.ts",
+    "./settings": "./src/settings.ts",
+    "./phone": "./src/phone.ts",
     "./email": "./src/email/index.ts",
     "./jobs": "./src/jobs/index.ts",
     "./money": "./src/money.ts"

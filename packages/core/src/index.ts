@@ -20,15 +20,50 @@ export {
 } from './auth/rbac';
 export type { AdminRole, Capability } from './auth/rbac';
 
-export { getPaymentProvider, MidtransProvider } from './payment/index';
+export { getPaymentProvider, MidtransProvider, FakePaymentProvider } from './payment/index';
+export { normalizeMsisdn, isValidMsisdn, msisdnLastDigits } from './phone';
 export type {
   PaymentProvider,
   CreateChargeInput,
   WebhookVerification,
 } from './payment/index';
 
-export { getShippingProvider, BiteshipProvider } from './shipping/index';
-export type { ShippingProvider, RateOption, RateQuoteInput } from './shipping/index';
+export { getShippingProvider, BiteshipProvider, FakeShippingProvider } from './shipping/index';
+export type { ShippingProvider, RateOption, RateQuoteInput, AreaResult } from './shipping/index';
+
+export {
+  createCheckout,
+  reserveStock,
+  releaseStock,
+  commitSale,
+  StockUnavailableError,
+  getOrderForConfirmation,
+  findOrderForTracking,
+  normalizeOrderNumber,
+  applyPaymentUpdate,
+  reconcilePendingOrder,
+  expireStaleHold,
+  cancelOrphanedOrder,
+  findStuckOrders,
+  findExpiredHolds,
+  findOrphanedOrders,
+  repayOrder,
+} from './orders/index';
+export type {
+  CreateCheckoutInput,
+  CreateCheckoutResult,
+  CheckoutError,
+  CheckoutContact,
+  CheckoutAddress,
+  CheckoutShipping,
+  StockLine,
+  ApplyResult,
+  ApplyOutcome,
+  RepayResult,
+  RepayError,
+  TrackedOrder,
+} from './orders/index';
+export { getSetting, getNumberSetting } from './settings';
 
 export { sendEmail, waMeLink } from './email/index';
 export { enqueue, getBoss, stopBoss, QUEUES } from './jobs/index';

@@ -2,14 +2,22 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { clientConfig } from '../../client.config';
 import { LocaleSwitcher } from './locale-switcher';
+import { CartBadge } from './cart-badge';
 
 export async function SiteHeader({ locale }: { locale: string }) {
   const t = await getTranslations('nav');
   return (
     <header className="border-b">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-lg text-brand">
-          {clientConfig.name}
+        <Link href="/" aria-label={clientConfig.name} className="shrink-0">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo-light.svg"
+            alt={clientConfig.name}
+            width={168}
+            height={74}
+            className="h-10 w-auto"
+          />
         </Link>
         <nav className="hidden gap-6 text-sm sm:flex">
           <Link href="/katalog">{t('catalog')}</Link>
@@ -22,9 +30,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
         </nav>
         <div className="flex items-center gap-4 text-sm">
           <LocaleSwitcher current={locale} />
-          <Link href="/keranjang" className="font-medium">
-            {t('cart')}
-          </Link>
+          <CartBadge label={t('cart')} />
         </div>
       </div>
     </header>

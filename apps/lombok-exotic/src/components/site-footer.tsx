@@ -8,8 +8,14 @@ export async function SiteFooter({ locale }: { locale: string }) {
   return (
     <footer className="border-t bg-black text-white/70">
       <div className="mx-auto max-w-6xl px-6 py-10 text-sm">
-        <p className="font-display text-lg text-brand">{clientConfig.name}</p>
-        <p className="mt-1">{tr(clientConfig.tagline, locale)}</p>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/logo-dark.svg"
+          alt={`${clientConfig.name} — ${tr(clientConfig.tagline, locale)}`}
+          width={240}
+          height={106}
+          className="w-56"
+        />
         {clientConfig.contact.addressLine && (
           <p className="mt-3">{clientConfig.contact.addressLine}</p>
         )}
