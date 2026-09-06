@@ -1,13 +1,69 @@
 import Link from 'next/link';
+import { clientConfig } from '../../client.config';
 
-// Global fallback for unmatched paths outside a locale segment.
+/**
+ * Global fallback for paths that match no route at all (e.g. a mistyped URL
+ * outside any locale segment). Renders its own document — `app/layout.tsx`
+ * and next-intl context are not available here — so styles are inline and
+ * copy is Indonesian (the default locale).
+ */
 export default function GlobalNotFound() {
   return (
     <html lang="id">
-      <body style={{ fontFamily: 'system-ui, sans-serif', padding: '4rem', textAlign: 'center' }}>
-        <h1>404</h1>
-        <p>Halaman tidak ditemukan.</p>
-        <Link href="/id">Kembali ke beranda</Link>
+      <body
+        style={{
+          margin: 0,
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '1.25rem',
+          padding: '2rem',
+          textAlign: 'center',
+          background: '#0a0a0a',
+          color: '#fff',
+          fontFamily: 'Inter, system-ui, sans-serif',
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/logo-dark.svg"
+          alt={clientConfig.name}
+          width={220}
+          height={97}
+          style={{ width: '100%', maxWidth: 220, height: 'auto' }}
+        />
+        <p style={{ fontSize: '3rem', fontWeight: 700, margin: 0, color: '#c81e1e' }}>404</p>
+        <p style={{ margin: 0, fontSize: '1.125rem' }}>Halaman yang kamu cari tidak ada.</p>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <Link
+            href="/id"
+            style={{
+              background: '#c81e1e',
+              color: '#fff',
+              padding: '0.75rem 1.5rem',
+              borderRadius: 6,
+              textDecoration: 'none',
+              fontWeight: 500,
+            }}
+          >
+            Kembali ke Beranda
+          </Link>
+          <Link
+            href="/id/katalog"
+            style={{
+              border: '1px solid rgba(255,255,255,0.4)',
+              color: '#fff',
+              padding: '0.75rem 1.5rem',
+              borderRadius: 6,
+              textDecoration: 'none',
+              fontWeight: 500,
+            }}
+          >
+            Lihat Katalog
+          </Link>
+        </div>
       </body>
     </html>
   );
