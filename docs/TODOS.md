@@ -205,7 +205,18 @@ FakePaymentProvider for 3.2a). Build order 3.2a → 3.2b → 3.2c.
       `article.*` i18n (id+en). Sitemap includes article URLs. Product-story on PDP already shipped
       (`produk/[slug]` renders `product.story`). Homepage already rebuilt vs omiyago (Week 2) — its
       latest-articles links now resolve. Remaining: real product photos (client dep).
-- [ ] SEO audit (Lighthouse), perf pass (ISR on catalog, image sizing)
+- [~] SEO + perf pass. `lib/seo.ts` — `localizedAlternates` (self-canonical + hreflang
+      per locale + `x-default`), `organizationJsonLd` / `websiteJsonLd` (+ SearchAction).
+      ISR `revalidate = 300` on homepage / `/artikel` / `/artikel/[slug]` / `/tentang` /
+      `/produk/[slug]` (+ `generateStaticParams` → PDP went `ƒ`→`●`, prerenders the catalog)
+      + `/sitemap.xml`. On-demand `revalidatePath('/[locale]…','page')` for homepage+katalog+
+      PDP+sitemap from every product/variant/image admin mutation. `robots.ts` disallow
+      widened (`/admin`, `/*/checkout`, `/*/keranjang`, `/*/lacak`, `/*/pesanan/`). Sitemap
+      emits `xhtml:link` hreflang alternates for shared pages (articles stay per-locale).
+      Homepage carries Organization+WebSite JSON-LD; PDP Product; articles Article.
+      Remaining: real Lighthouse run on the deployed box; `<img>`→`next/image` (deferred —
+      product photos are still placeholders, client dep); `/katalog` stays request-dynamic
+      (reads `searchParams`) — fine at demo scale.
 - [ ] QA pass (`/qa`), accessibility basics, empty/error states
 - [ ] Backup: Neon PITR confirmed OR `pg_dump` cron; document restore
 

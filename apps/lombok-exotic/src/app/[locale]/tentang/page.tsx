@@ -3,6 +3,10 @@ import { setRequestLocale } from 'next-intl/server';
 import { clientConfig } from '../../../../client.config';
 import { tr } from '@lombok-exotic/core/config';
 import { getContentPage, renderMarkdown } from '@/lib/content';
+import { localizedAlternates } from '@/lib/seo';
+
+// ISR: see CONTENT_REVALIDATE_SECONDS in lib/seo.ts.
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -15,7 +19,7 @@ export async function generateMetadata({
   return {
     title,
     description: page?.metaDescription ?? tr(clientConfig.description, locale),
-    alternates: { canonical: `/${locale}/tentang` },
+    alternates: localizedAlternates(locale, '/tentang'),
   };
 }
 

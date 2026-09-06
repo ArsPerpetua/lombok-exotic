@@ -5,6 +5,9 @@ import { Link } from '@/i18n/navigation';
 import { clientConfig } from '../../../../../client.config';
 import { getArticle, getAllArticleSlugs, renderMarkdown } from '@/lib/content';
 
+// ISR: prerender known articles, revalidate every 5 min, allow new slugs on demand.
+export const revalidate = 300;
+
 interface RouteParams {
   locale: string;
   slug: string;

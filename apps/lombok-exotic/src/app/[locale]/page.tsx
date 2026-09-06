@@ -5,11 +5,17 @@ import { clientConfig } from '../../../client.config';
 import { tr } from '@lombok-exotic/core/config';
 import { getCategories, getFeaturedProducts } from '@/lib/catalog';
 import { getLatestArticles } from '@/lib/content';
+import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
+
+// ISR: storefront data may be up to 5 min stale; admin edits also revalidate on demand.
+export const revalidate = 300;
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('home');
+
+  const jsonLd = [organizationJsonLd(locale), websiteJsonLd(locale)];
 
   const [products, categories, articles] = await Promise.all([
     getFeaturedProducts(8),
@@ -21,6 +27,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* ── Hero (kept) ─────────────────────────────────────────────────── */}
       <section className="bg-black text-white">
         <div className="mx-auto max-w-5xl px-6 py-20 text-center">

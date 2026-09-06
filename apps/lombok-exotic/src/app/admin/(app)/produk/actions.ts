@@ -18,6 +18,14 @@ export type FormState =
   | { status: 'ok'; message: string }
   | { status: 'error'; message: string };
 
+/** Bust the ISR cache for every storefront surface that shows catalog data. */
+function revalidateStorefrontCatalog(): void {
+  revalidatePath('/[locale]', 'page');
+  revalidatePath('/[locale]/katalog', 'page');
+  revalidatePath('/[locale]/produk/[slug]', 'page');
+  revalidatePath('/sitemap.xml');
+}
+
 const ERR: Record<string, string> = {
   slug_taken: 'Slug sudah dipakai produk lain.',
   sku_taken: 'SKU sudah dipakai varian lain.',
@@ -77,6 +85,7 @@ export async function saveProductAction(_prev: FormState, formData: FormData): P
     );
     if (!res.ok) return { status: 'error', message: ERR[res.error] ?? res.error };
     revalidatePath('/admin/produk');
+    revalidateStorefrontCatalog();
     if (!d.id) redirect(`/admin/produk/${res.id}`);
     revalidatePath(`/admin/produk/${res.id}`);
     return { status: 'ok', message: 'Produk disimpan.' };
@@ -124,6 +133,7 @@ export async function saveVariantAction(_prev: FormState, formData: FormData): P
     );
     if (!res.ok) return { status: 'error', message: ERR[res.error] ?? res.error };
     revalidatePath(`/admin/produk/${productId}`);
+    revalidateStorefrontCatalog();
     return { status: 'ok', message: 'Varian disimpan.' };
   } catch (err) {
     if (err instanceof AuthorizationError) return { status: 'error', message: 'Tidak punya izin.' };
@@ -139,6 +149,7 @@ export async function deactivateVariantAction(_prev: FormState, formData: FormDa
     const actor = await requireAdminActor('catalog:write');
     await deactivateVariant(variantId, actor);
     revalidatePath(`/admin/produk/${productId}`);
+    revalidateStorefrontCatalog();
     return { status: 'ok', message: 'Varian dinonaktifkan.' };
   } catch (err) {
     if (err instanceof AuthorizationError) return { status: 'error', message: 'Tidak punya izin.' };
@@ -157,6 +168,7 @@ export async function addImageAction(_prev: FormState, formData: FormData): Prom
     await requireAdminActor('catalog:write');
     await attachImage(productId, url, alt || null);
     revalidatePath(`/admin/produk/${productId}`);
+    revalidateStorefrontCatalog();
     return { status: 'ok', message: 'Gambar ditambahkan.' };
   } catch (err) {
     if (err instanceof AuthorizationError) return { status: 'error', message: 'Tidak punya izin.' };
@@ -171,6 +183,7 @@ export async function removeImageAction(_prev: FormState, formData: FormData): P
     await requireAdminActor('catalog:write');
     await detachImage(imageId);
     revalidatePath(`/admin/produk/${productId}`);
+    revalidateStorefrontCatalog();
     return { status: 'ok', message: 'Gambar dihapus.' };
   } catch (err) {
     if (err instanceof AuthorizationError) return { status: 'error', message: 'Tidak punya izin.' };

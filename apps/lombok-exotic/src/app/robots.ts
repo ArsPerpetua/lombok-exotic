@@ -7,7 +7,14 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/keranjang', '/lacak'],
+      disallow: [
+        '/api/',
+        '/admin',
+        '/*/keranjang',
+        '/*/checkout',
+        '/*/lacak',
+        '/*/pesanan/',
+      ],
     },
     sitemap: `${base}/sitemap.xml`,
   };

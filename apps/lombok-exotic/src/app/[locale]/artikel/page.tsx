@@ -3,6 +3,10 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { clientConfig } from '../../../../client.config';
 import { getPublishedArticles } from '@/lib/content';
+import { localizedAlternates } from '@/lib/seo';
+
+// ISR: see CONTENT_REVALIDATE_SECONDS in lib/seo.ts.
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -14,7 +18,7 @@ export async function generateMetadata({
   return {
     title: t('indexTitle'),
     description: t('indexLead'),
-    alternates: { canonical: `/${locale}/artikel` },
+    alternates: localizedAlternates(locale, '/artikel'),
   };
 }
 

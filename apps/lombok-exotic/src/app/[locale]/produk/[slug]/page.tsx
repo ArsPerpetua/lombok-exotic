@@ -4,12 +4,24 @@ import { notFound } from 'next/navigation';
 import { formatIdr } from '@lombok-exotic/core/money';
 import { Link } from '@/i18n/navigation';
 import { clientConfig } from '../../../../../client.config';
-import { bundleBreakdown, getProductDetail } from '@/lib/catalog';
+import { routing } from '@/i18n/routing';
+import { bundleBreakdown, getAllProductSlugs, getProductDetail } from '@/lib/catalog';
+import { localizedAlternates } from '@/lib/seo';
 import { ProductDetail } from '@/components/product-detail';
+
+// ISR: prerender the catalog, refresh every 5 min; product/variant saves in
+// admin also revalidate this route on demand. Stock shown here is a hint —
+// checkout re-reserves against live stock.
+export const revalidate = 300;
 
 interface RouteParams {
   locale: string;
   slug: string;
+}
+
+export async function generateStaticParams() {
+  const slugs = await getAllProductSlugs();
+  return routing.locales.flatMap((locale) => slugs.map(({ slug }) => ({ locale, slug })));
 }
 
 export async function generateMetadata({
@@ -22,14 +34,16 @@ export async function generateMetadata({
   if (!product) return {};
 
   const description =
-    product.metaDescription ?? product.shortDescription ?? clientConfig.description[locale as 'id' | 'en'];
+    product.metaDescription ??
+    product.shortDescription ??
+    clientConfig.description[locale as 'id' | 'en'];
   const image = product.images[0]?.url ?? clientConfig.seo.defaultOgImage;
   const url = `/${locale}/produk/${slug}`;
 
   return {
     title: product.metaTitle ?? product.name,
     description,
-    alternates: { canonical: url },
+    alternates: localizedAlternates(locale, `/produk/${slug}`),
     openGraph: {
       type: 'website',
       title: product.name,

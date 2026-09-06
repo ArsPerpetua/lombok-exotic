@@ -9,6 +9,10 @@ import {
   getCategories,
   parseSort,
 } from '@/lib/catalog';
+import { localizedAlternates } from '@/lib/seo';
+
+// ISR: see CONTENT_REVALIDATE_SECONDS in lib/seo.ts.
+export const revalidate = 300;
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -21,7 +25,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: 'catalog' });
   return {
     title: t('title'),
-    alternates: { canonical: `/${locale}/katalog` },
+    alternates: localizedAlternates(locale, '/katalog'),
   };
 }
 
