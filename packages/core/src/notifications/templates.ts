@@ -86,6 +86,22 @@ export async function renderEmail(
         `Ada permintaan pesanan rombongan baru (${payload.reference ?? ''}). Buka /admin untuk menindaklanjuti.`,
       );
 
+    case 'group_preorder.quote': {
+      const o = await loadOrder(String(payload.orderNumber ?? ''));
+      const pay = payload.redirectUrl ? `<p><a href="${payload.redirectUrl}">Bayar sekarang →</a></p>` : '';
+      return {
+        subject: `Penawaran pesanan rombongan — ${payload.reference ?? ''}`,
+        html: `<div style="font-family:system-ui,sans-serif;max-width:520px;margin:0 auto">
+  <h2 style="color:#c81e1e">Penawaran pesanan rombongan</h2>
+  <p>Terima kasih. Berikut penawaran untuk permintaan <strong>${payload.reference ?? ''}</strong>.</p>
+  ${o ? `<p>Nomor pesanan: <strong>${o.orderNumber}</strong><br>Total: <strong>${formatIdr(o.grandTotalIdr)}</strong></p>` : ''}
+  ${pay}
+  <p style="color:#6b7280;font-size:13px">Paket akan disiapkan sesuai jadwal kedatangan. Lombok Exotic.</p>
+</div>`,
+        text: `Penawaran pesanan rombongan ${payload.reference ?? ''}. ${o ? `Nomor pesanan ${o.orderNumber}, total ${formatIdr(o.grandTotalIdr)}.` : ''} ${payload.redirectUrl ?? ''}`,
+      };
+    }
+
     default:
       return null;
   }

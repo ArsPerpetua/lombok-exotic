@@ -77,6 +77,8 @@ export async function applyPaymentUpdate(v: WebhookVerification): Promise<ApplyR
         locationId: orders.locationId,
         customerId: orders.customerId,
         tourLeaderId: orders.tourLeaderId,
+        channel: orders.channel,
+        internalNote: orders.internalNote,
       })
       .from(orders)
       .where(eq(orders.id, orderId))
@@ -204,6 +206,20 @@ export async function applyPaymentUpdate(v: WebhookVerification): Promise<ApplyR
         } catch (err) {
           console.warn('[payment-state] commission enqueue failed:', err);
         }
+      }
+
+      // A group pre-order's quote order settling → advance the group record.
+      if (order.channel === 'group_preorder' && order.internalNote?.startsWith('group:')) {
+        const groupId = order.internalNote.slice(6);
+        await tx
+          .update(schema.groupPreorders)
+          .set({ status: 'paid' })
+          .where(
+            and(
+              eq(schema.groupPreorders.id, groupId),
+              inArray(schema.groupPreorders.status, ['quoted', 'confirmed']),
+            ),
+          );
       }
 
       return { outcome: 'paid', orderNumber: order.orderNumber, oversold };

@@ -8,6 +8,7 @@ import { AdminSignOut } from '@/components/admin/sign-out';
 const NAV = [
   { href: '/admin', label: 'Dashboard' },
   { href: '/admin/pesanan', label: 'Pesanan' },
+  { href: '/admin/rombongan', label: 'Rombongan' },
   { href: '/admin/produk', label: 'Produk' },
   { href: '/admin/voucher', label: 'Voucher' },
 ];

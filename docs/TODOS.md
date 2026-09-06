@@ -175,8 +175,18 @@ FakePaymentProvider for 3.2a). Build order 3.2a → 3.2b → 3.2c.
       variant create/update/deactivate). Extend as more admin mutations land.
 
 ### Week 5 — differentiator + content + polish
-- [ ] Group pre-order: admin queue, line items, quote → order, quote email + wa.me,
-      status flow, assign-to-staff
+- [x] Group pre-order admin — `core/groups/admin.ts` (`listGroupPreorders` /
+      `getGroupPreorder` / `saveGroupItem` + auto-recompute estimate / `removeGroupItem` /
+      `assignGroupPreorder` / `setGroupNotes` / `transitionGroupPreorder` guarded state
+      machine `new→quoted→confirmed→paid→fulfilled` / `generateQuote`). `/admin/rombongan`
+      queue + `/admin/rombongan/[id]` detail (`<GroupControls>`: line-item editor, quote
+      button, status, assign-to-staff, internal notes, wa.me chat). `generateQuote` →
+      real order (channel `group_preorder`, no shipping, `internal_note=group:<id>`),
+      reserves stock for linked variants only, Midtrans/fake charge, links `quoteOrderId`,
+      status → quoted, queues `group_preorder.quote` (agent). `applyPaymentUpdate` flips
+      the group record → `paid` when the quote order settles. `group_preorder:write` gate,
+      audit rows. e2e-smoked: storefront form → queue → add item → quote (order+payment) →
+      pay webhook → group auto-`paid`.
 - [ ] Tour-leader model surfaced read-only in admin (referral code + QR render)
 - [ ] Homepage polish, brand story page, 2-3 seed SEO articles, product-story on PDP
 - [ ] SEO audit (Lighthouse), perf pass (ISR on catalog, image sizing)

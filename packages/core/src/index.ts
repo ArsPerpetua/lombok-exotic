@@ -66,6 +66,16 @@ export type {
 export { getSetting, getNumberSetting } from './settings';
 export { writeAudit } from './audit';
 export {
+  listGroupPreorders,
+  getGroupPreorder,
+  saveGroupItem,
+  removeGroupItem,
+  assignGroupPreorder,
+  setGroupNotes,
+  transitionGroupPreorder,
+  generateQuote,
+} from './groups/index';
+export {
   slugify,
   listAdminProducts,
   getAdminProduct,
