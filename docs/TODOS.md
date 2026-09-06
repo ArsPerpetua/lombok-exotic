@@ -196,7 +196,15 @@ FakePaymentProvider for 3.2a). Build order 3.2a → 3.2b → 3.2c.
       `tour_leader:read` gate. Nav: + Tour Leader. Seed: 3 tour leaders, stable codes
       (`TL-WAYAN01` / `TL-ARIANI1` / `TL-RUSDI01`). Auto commission accrual + payout
       report = Phase 2; `?ref=` capture = Phase 2.
-- [ ] Homepage polish, brand story page, 2-3 seed SEO articles, product-story on PDP
+- [~] Blog + brand story + product-story. Real `/artikel` list + `/artikel/[slug]` detail
+      (`lib/content.ts`: `getPublishedArticles`/`getArticle`/`getAllArticleSlugs`/`getContentPage`/
+      `renderMarkdown` via `marked`; `generateStaticParams`, JSON-LD `Article`, OG, canonical).
+      `.article-body` typography in `globals.css`. `/tentang` rebuilt on `getContentPage('tentang')`
+      + markdown + generateMetadata. Seed: `db/seed-content.ts` — 4 SEO articles (3 id + 1 en,
+      staggered `publishedAt`, meta fields) + full brand-story `tentang` body; upserts on re-seed.
+      `article.*` i18n (id+en). Sitemap includes article URLs. Product-story on PDP already shipped
+      (`produk/[slug]` renders `product.story`). Homepage already rebuilt vs omiyago (Week 2) — its
+      latest-articles links now resolve. Remaining: real product photos (client dep).
 - [ ] SEO audit (Lighthouse), perf pass (ISR on catalog, image sizing)
 - [ ] QA pass (`/qa`), accessibility basics, empty/error states
 - [ ] Backup: Neon PITR confirmed OR `pg_dump` cron; document restore

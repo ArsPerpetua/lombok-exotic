@@ -10,6 +10,7 @@ import 'dotenv/config';
 import { db } from './index';
 import * as s from './schema/index';
 import { auth } from '../auth/index';
+import { articleSeed, aboutPageBody } from './seed-content';
 import { eq } from 'drizzle-orm';
 
 const OWNER_EMAIL = process.env.SEED_OWNER_EMAIL ?? 'owner@lombokexotic.test';
@@ -292,19 +293,32 @@ async function main() {
   }
 
   // ── Content ──────────────────────────────────────────────────────────────
-  await db
-    .insert(s.articles)
-    .values({
-      slug: 'oleh-oleh-khas-lombok-yang-wajib-dibawa-pulang',
-      locale: 'id',
-      title: 'Oleh-Oleh Khas Lombok yang Wajib Dibawa Pulang',
-      excerpt: 'Dari tenun Sukarara sampai kopi robusta Sembalun — daftar oleh-oleh Lombok.',
-      body: '# Oleh-Oleh Khas Lombok\n\nKonten contoh untuk SEO.',
-      status: 'published',
-      publishedAt: new Date(),
-      author: 'Tim Lombok Exotic',
-    })
-    .onConflictDoNothing();
+  const aboutMeta = {
+    metaTitle: 'Tentang Lombok Exotic — Pusat Oleh-Oleh Khas Lombok di Senggigi',
+    metaDescription:
+      'Lombok Exotic: pusat oleh-oleh khas Lombok di Senggigi. Bekerja langsung dengan perajin tenun, perak, dan kopi. Merek terdaftar DJKI.',
+  };
+  const nowMs = Date.now();
+  for (const a of articleSeed) {
+    const publishedAt = new Date(nowMs - a.publishedDaysAgo * 86_400_000);
+    const row = {
+      title: a.title,
+      excerpt: a.excerpt,
+      body: a.body,
+      status: 'published' as const,
+      publishedAt,
+      author: a.author,
+      metaTitle: a.metaTitle,
+      metaDescription: a.metaDescription,
+    };
+    await db
+      .insert(s.articles)
+      .values({ slug: a.slug, locale: a.locale, ...row })
+      .onConflictDoUpdate({
+        target: [s.articles.slug, s.articles.locale],
+        set: { ...row, updatedAt: new Date() },
+      });
+  }
 
   await db
     .insert(s.contentPages)
@@ -312,10 +326,14 @@ async function main() {
       slug: 'tentang',
       locale: 'id',
       title: 'Tentang Lombok Exotic',
-      body: 'Toko oleh-oleh terbesar di Senggigi. Merek terdaftar HKI di Kemenkumham.',
+      body: aboutPageBody,
       status: 'published',
+      ...aboutMeta,
     })
-    .onConflictDoNothing();
+    .onConflictDoUpdate({
+      target: [s.contentPages.slug, s.contentPages.locale],
+      set: { body: aboutPageBody, status: 'published', ...aboutMeta, updatedAt: new Date() },
+    });
 
   await db
     .insert(s.banners)

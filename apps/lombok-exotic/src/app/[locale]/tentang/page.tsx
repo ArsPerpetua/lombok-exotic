@@ -1,36 +1,36 @@
+import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
-import { db, schema } from '@lombok-exotic/core/db';
-import { and, eq } from 'drizzle-orm';
 import { clientConfig } from '../../../../client.config';
 import { tr } from '@lombok-exotic/core/config';
+import { getContentPage, renderMarkdown } from '@/lib/content';
 
-export const metadata = { title: 'Tentang' };
-
-async function loadPage(locale: 'id' | 'en') {
-  try {
-    return await db.query.contentPages.findFirst({
-      where: and(
-        eq(schema.contentPages.slug, 'tentang'),
-        eq(schema.contentPages.locale, locale),
-        eq(schema.contentPages.status, 'published'),
-      ),
-    });
-  } catch {
-    return null;
-  }
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const page = await getContentPage(locale, 'tentang');
+  const title = page?.metaTitle ?? page?.title ?? `Tentang ${clientConfig.name}`;
+  return {
+    title,
+    description: page?.metaDescription ?? tr(clientConfig.description, locale),
+    alternates: { canonical: `/${locale}/tentang` },
+  };
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const page = await loadPage(locale === 'en' ? 'en' : 'id');
+  const page = await getContentPage(locale, 'tentang');
+  const bodyHtml = page?.body
+    ? renderMarkdown(page.body)
+    : renderMarkdown(tr(clientConfig.description, locale));
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
-      <h1 className="text-2xl font-semibold">{page?.title ?? `Tentang ${clientConfig.name}`}</h1>
-      <div className="prose mt-4 whitespace-pre-line text-[var(--color-fg)]">
-        {page?.body ?? tr(clientConfig.description, locale)}
-      </div>
+      <h1 className="font-display text-3xl">{page?.title ?? `Tentang ${clientConfig.name}`}</h1>
+      <div className="article-body mt-6" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
     </div>
   );
 }

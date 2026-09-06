@@ -206,5 +206,16 @@
   "common": {
     "from": "from",
     "language": "Language"
+  },
+  "article": {
+    "indexTitle": "Articles & Lombok Souvenir Tips",
+    "indexLead": "How to choose authentic Lombok souvenirs, the stories behind the products, and tips for safe shipping across Indonesia.",
+    "empty": "No articles yet. Check back soon.",
+    "crumb": "Articles",
+    "backToList": "All articles",
+    "storeCta": "Shop authentic Lombok souvenirs at",
+    "ctaTitle": "Ready to take home a piece of Lombok?",
+    "ctaBody": "Every product is packed carefully, with accurate weight & dimensions, shipped nationwide.",
+    "ctaButton": "Browse the catalog"
   }
 }

@@ -206,5 +206,16 @@
   "common": {
     "from": "mulai dari",
     "language": "Bahasa"
+  },
+  "article": {
+    "indexTitle": "Artikel & Tips Oleh-Oleh Lombok",
+    "indexLead": "Panduan memilih oleh-oleh khas Lombok, cerita di balik produk, dan tips kirim aman ke seluruh Indonesia.",
+    "empty": "Belum ada artikel. Nantikan segera.",
+    "crumb": "Artikel",
+    "backToList": "Semua artikel",
+    "storeCta": "Belanja oleh-oleh khas Lombok langsung di",
+    "ctaTitle": "Siap bawa pulang oleh-oleh Lombok?",
+    "ctaBody": "Semua produk dikemas rapi, berat & dimensi akurat, dikirim ke seluruh Indonesia.",
+    "ctaButton": "Lihat Katalog"
   }
 }
