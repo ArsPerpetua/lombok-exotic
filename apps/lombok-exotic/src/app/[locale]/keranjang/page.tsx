@@ -38,7 +38,9 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
           totalWeight: t('totalWeight'),
           shippingNote: t('shippingNote'),
           checkout: t('checkout'),
-          stockLeft: t('stockLeft'),
+          // Raw template — the client fills {n} via .replace(); t() would throw
+          // FORMATTING_ERROR here because no `n` is provided at this call site.
+          stockLeft: t.raw('stockLeft') as string,
           genericError: t('genericError'),
         }}
       />
