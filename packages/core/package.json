@@ -15,6 +15,7 @@
     "./catalog": "./src/catalog/index.ts",
     "./marketing": "./src/marketing/index.ts",
     "./groups": "./src/groups/index.ts",
+    "./tour-leaders": "./src/tour-leaders/index.ts",
     "./notifications": "./src/notifications/index.ts",
     "./audit": "./src/audit.ts",
     "./settings": "./src/settings.ts",

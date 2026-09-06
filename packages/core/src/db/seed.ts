@@ -10,7 +10,6 @@ import 'dotenv/config';
 import { db } from './index';
 import * as s from './schema/index';
 import { auth } from '../auth/index';
-import { referralCode } from '../ids';
 import { eq } from 'drizzle-orm';
 
 const OWNER_EMAIL = process.env.SEED_OWNER_EMAIL ?? 'owner@lombokexotic.test';
@@ -237,18 +236,60 @@ async function main() {
     })
     .onConflictDoNothing({ target: s.vouchers.code });
 
-  // ── Tour leader ──────────────────────────────────────────────────────────
-  await db
-    .insert(s.tourLeaders)
-    .values({
-      name: 'Pak Wayan (demo)',
-      phone: '6281811112222',
-      agencyName: 'Lombok Tour Service',
-      referralCode: referralCode(),
-      commissionType: 'percent',
-      commissionValue: 5,
-    })
-    .onConflictDoNothing({ target: s.tourLeaders.phone });
+  // ── Tour leaders ─────────────────────────────────────────────────────────
+  // Stable referral codes so re-seeding + printed QR cards stay valid.
+  // Drop the pre-stable-code demo row if it's still around from an early seed.
+  await db.delete(s.tourLeaders).where(eq(s.tourLeaders.name, 'Pak Wayan (demo)'));
+  const tourLeaderSeed: (typeof s.tourLeaders.$inferInsert)[] = [
+      {
+        name: 'Pak Wayan Sudana',
+        phone: '6281811112222',
+        agencyName: 'Lombok Tour Service',
+        referralCode: 'TL-WAYAN01',
+        commissionType: 'percent',
+        commissionValue: 5,
+        bankName: 'BRI',
+        bankAccount: '003201000123456',
+        bankHolder: 'I Wayan Sudana',
+        notes: 'Rutin bawa rombongan kapal pesiar dari Benoa. Kontak via WA saja.',
+      },
+      {
+        name: 'Ibu Ni Luh Ariani',
+        phone: '6281833334444',
+        agencyName: 'Bali Nusra Holiday',
+        referralCode: 'TL-ARIANI1',
+        commissionType: 'percent',
+        commissionValue: 7,
+        bankName: 'BCA',
+        bankAccount: '7712345678',
+        bankHolder: 'Ni Luh Ariani',
+      },
+      {
+        name: 'Sopir — H. Amaq Rusdi',
+        phone: '6281855556666',
+        agencyName: null,
+        referralCode: 'TL-RUSDI01',
+        commissionType: 'fixed',
+        commissionValue: 15_000,
+        notes: 'Sopir freelance bus pariwisata. Komisi flat per paket terjual.',
+      },
+  ];
+  for (const tl of tourLeaderSeed) {
+    await db
+      .insert(s.tourLeaders)
+      .values(tl)
+      .onConflictDoUpdate({
+        target: s.tourLeaders.phone,
+        set: {
+          name: tl.name,
+          agencyName: tl.agencyName ?? null,
+          referralCode: tl.referralCode,
+          commissionType: tl.commissionType,
+          commissionValue: tl.commissionValue,
+          updatedAt: new Date(),
+        },
+      });
+  }
 
   // ── Content ──────────────────────────────────────────────────────────────
   await db

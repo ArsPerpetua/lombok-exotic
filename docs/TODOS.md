@@ -187,7 +187,15 @@ FakePaymentProvider for 3.2a). Build order 3.2a → 3.2b → 3.2c.
       the group record → `paid` when the quote order settles. `group_preorder:write` gate,
       audit rows. e2e-smoked: storefront form → queue → add item → quote (order+payment) →
       pay webhook → group auto-`paid`.
-- [ ] Tour-leader model surfaced read-only in admin (referral code + QR render)
+- [x] Tour-leader model surfaced read-only in admin — `core/tour-leaders/admin.ts`
+      (`listTourLeaders` with attributed order count / revenue / projected commission,
+      `getTourLeader` detail: profile + bank + attributed orders + linked rombongan +
+      commission-by-period, `referralUrl`). `/admin/tour-leader[/[id]]` read-only pages;
+      QR (referral URL) rendered inline via `qrcode` + printable QR card at
+      `/admin/tour-leader/[id]/qr` (sidebar-less `(print)` group + `<PrintButton>`).
+      `tour_leader:read` gate. Nav: + Tour Leader. Seed: 3 tour leaders, stable codes
+      (`TL-WAYAN01` / `TL-ARIANI1` / `TL-RUSDI01`). Auto commission accrual + payout
+      report = Phase 2; `?ref=` capture = Phase 2.
 - [ ] Homepage polish, brand story page, 2-3 seed SEO articles, product-story on PDP
 - [ ] SEO audit (Lighthouse), perf pass (ISR on catalog, image sizing)
 - [ ] QA pass (`/qa`), accessibility basics, empty/error states
