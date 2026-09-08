@@ -93,6 +93,124 @@ body {
     var(--color-accent);
   filter: blur(0.4px) contrast(1.05);
 }
+.ikat-band--xl {
+  height: clamp(30px, 4vw, 46px);
+}
+
+/* ── Bold-editorial homepage primitives ─────────────────────────────────
+ * A denser, full-saturation ikat field for the hero backdrop. */
+.ikat-field {
+  background-color: var(--color-indigo-deep);
+  background-image:
+    repeating-linear-gradient(45deg, var(--color-brand) 0 3px, transparent 3px 17px),
+    repeating-linear-gradient(-45deg, var(--color-brand) 0 3px, transparent 3px 17px),
+    repeating-linear-gradient(45deg, var(--color-turmeric-fill) 8px 10px, transparent 10px 24px),
+    repeating-linear-gradient(-45deg, var(--color-turmeric-fill) 8px 10px, transparent 10px 24px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 5px);
+  background-size: 24px 24px, 24px 24px, 24px 24px, 24px 24px, auto;
+}
+
+/* Turmeric letterspaced kicker above section headings. */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-turmeric);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.eyebrow::before {
+  content: '';
+  width: 2rem;
+  height: 2px;
+  background: var(--color-turmeric-fill);
+}
+.eyebrow--on-dark {
+  color: var(--color-turmeric-fill);
+}
+
+/* Generated woven-cloth placeholders — the products ARE textiles, so a woven
+ * pattern reads better than a grey box until real photography lands. */
+.weave-1 {
+  background:
+    repeating-linear-gradient(48deg, #1e3a5f 0 6px, #25476e 6px 12px),
+    repeating-linear-gradient(-48deg, rgba(216, 161, 58, 0.55) 0 4px, transparent 4px 18px);
+}
+.weave-2 {
+  background:
+    repeating-linear-gradient(0deg, #9e2b25 0 7px, #b23a30 7px 14px),
+    repeating-linear-gradient(90deg, rgba(20, 18, 16, 0.4) 0 3px, transparent 3px 15px);
+}
+.weave-3 {
+  background:
+    repeating-linear-gradient(45deg, #7a5a2a 0 6px, #a8701a 6px 12px),
+    repeating-linear-gradient(-45deg, rgba(30, 58, 95, 0.6) 0 5px, transparent 5px 19px);
+}
+.weave-4 {
+  background:
+    repeating-linear-gradient(90deg, #21403f 0 7px, #2d5450 7px 14px),
+    repeating-linear-gradient(0deg, rgba(216, 161, 58, 0.45) 0 4px, transparent 4px 17px);
+}
+
+/* Buttons */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.5rem;
+  border: 1.5px solid transparent;
+  border-radius: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+.btn-fill {
+  background: var(--color-brand);
+  color: var(--color-brand-foreground);
+}
+.btn-line {
+  border-color: currentColor;
+}
+.btn-fill:hover,
+.btn-line:hover {
+  transform: translateY(-2px);
+}
+.btn-line:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover {
+    transform: none;
+  }
+}
+
+/* Scroll reveal — hidden only once <ScrollReveal> confirms JS can restore them. */
+html.js .reveal:not(.reveal-in) {
+  opacity: 0;
+  transform: translateY(18px);
+}
+.reveal {
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal:not(.reveal-in) {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal {
+    transition: none;
+  }
+}
 
 /* Long-form article / static-page body rendered from Markdown. */
 .article-body {

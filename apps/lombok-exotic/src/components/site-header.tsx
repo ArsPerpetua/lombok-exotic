@@ -19,7 +19,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
   ];
 
   return (
-    <header className="border-b">
+    <header className="sticky top-0 z-30 border-b bg-[var(--color-bg)]/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" aria-label={clientConfig.name} className="shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
