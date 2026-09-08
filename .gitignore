@@ -36,3 +36,4 @@ coverage/
 
 # runtime product image uploads (MVP local-disk store)
 apps/lombok-exotic/public/uploads/
+.gstack/

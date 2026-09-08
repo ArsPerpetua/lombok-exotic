@@ -18,6 +18,7 @@
     "./tour-leaders": "./src/tour-leaders/index.ts",
     "./notifications": "./src/notifications/index.ts",
     "./audit": "./src/audit.ts",
+    "./http": "./src/http.ts",
     "./settings": "./src/settings.ts",
     "./phone": "./src/phone.ts",
     "./email": "./src/email/index.ts",

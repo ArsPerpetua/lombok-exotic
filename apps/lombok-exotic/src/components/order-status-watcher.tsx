@@ -39,25 +39,33 @@ export function OrderStatusWatcher({
   const [error, setError] = useState<string | null>(null);
   const polls = useRef(0);
 
-  const checkOnce = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/orders/${orderNumber}/status`, { cache: 'no-store' });
-      const json = (await res.json()) as { status?: string };
-      if (json.status && json.status !== initialStatus) {
-        router.refresh();
-        return true;
+  const checkOnce = useCallback(
+    async (sync = false) => {
+      try {
+        const res = await fetch(
+          `/api/orders/${orderNumber}/status${sync ? '?sync=1' : ''}`,
+          { cache: 'no-store' },
+        );
+        const json = (await res.json()) as { status?: string };
+        if (json.status && json.status !== initialStatus) {
+          router.refresh();
+          return true;
+        }
+      } catch {
+        /* keep polling */
       }
-    } catch {
-      /* keep polling */
-    }
-    return false;
-  }, [orderNumber, initialStatus, router]);
+      return false;
+    },
+    [orderNumber, initialStatus, router],
+  );
 
   useEffect(() => {
     if (initialStatus !== 'pending_payment') return;
     const id = setInterval(async () => {
       polls.current += 1;
-      const changed = await checkOnce();
+      // First two ticks reconcile against the provider — the shopper has just
+      // landed back from the Snap page and the webhook may not have reached us.
+      const changed = await checkOnce(polls.current <= 2);
       if (changed || polls.current >= MAX_POLLS) clearInterval(id);
     }, POLL_MS);
     return () => clearInterval(id);
@@ -66,7 +74,7 @@ export function OrderStatusWatcher({
   async function manualCheck() {
     setBusy('check');
     setError(null);
-    await checkOnce();
+    await checkOnce(true);
     setBusy(null);
   }
 

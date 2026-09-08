@@ -3,9 +3,21 @@ import { Link } from '@/i18n/navigation';
 import { clientConfig } from '../../client.config';
 import { LocaleSwitcher } from './locale-switcher';
 import { CartBadge } from './cart-badge';
+import { MobileNav } from './mobile-nav';
 
 export async function SiteHeader({ locale }: { locale: string }) {
   const t = await getTranslations('nav');
+
+  const links = [
+    { href: '/katalog', label: t('catalog') },
+    ...(clientConfig.features.groupPreorder
+      ? [{ href: '/pesanan-rombongan', label: t('groupOrder') }]
+      : []),
+    ...(clientConfig.features.blog ? [{ href: '/artikel', label: t('blog') }] : []),
+    { href: '/tentang', label: t('about') },
+    { href: '/lacak', label: t('trackOrder') },
+  ];
+
   return (
     <header className="border-b">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -20,17 +32,16 @@ export async function SiteHeader({ locale }: { locale: string }) {
           />
         </Link>
         <nav className="hidden gap-6 text-sm sm:flex">
-          <Link href="/katalog">{t('catalog')}</Link>
-          {clientConfig.features.groupPreorder && (
-            <Link href="/pesanan-rombongan">{t('groupOrder')}</Link>
-          )}
-          {clientConfig.features.blog && <Link href="/artikel">{t('blog')}</Link>}
-          <Link href="/tentang">{t('about')}</Link>
-          <Link href="/lacak">{t('trackOrder')}</Link>
+          {links.map((l) => (
+            <Link key={l.href} href={l.href}>
+              {l.label}
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center gap-4 text-sm">
           <LocaleSwitcher current={locale} />
           <CartBadge label={t('cart')} />
+          <MobileNav links={links} openLabel={t('menu')} />
         </div>
       </div>
     </header>

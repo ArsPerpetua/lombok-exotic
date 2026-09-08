@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createCheckout } from '@lombok-exotic/core/orders';
+import { resolveRequestOrigin } from '@lombok-exotic/core/http';
 import { isValidMsisdn } from '@lombok-exotic/core/phone';
 import { readCartToken } from '@/lib/cart';
 
@@ -43,10 +44,14 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   const token = await readCartToken();
-  if (!token) return NextResponse.json({ ok: false, error: 'cart_empty' }, { status: 400 });
+  if (!token) {
+    console.warn('[checkout] 400 cart_empty — no le_cart cookie on the request');
+    return NextResponse.json({ ok: false, error: 'cart_empty' }, { status: 400 });
+  }
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
+    console.warn('[checkout] 400 invalid — zod:', JSON.stringify(parsed.error.flatten().fieldErrors));
     return NextResponse.json(
       { ok: false, error: 'invalid', issues: parsed.error.flatten() },
       { status: 400 },
@@ -71,10 +76,11 @@ export async function POST(req: Request) {
     shipping: d.shipping,
     locale: d.locale,
     customerNote: d.customerNote || null,
-    appUrl: new URL(req.url).origin,
+    appUrl: resolveRequestOrigin(req),
   });
 
   if (!result.ok) {
+    console.warn('[checkout] createCheckout failed:', result.error);
     const status =
       result.error === 'stock_unavailable' || result.error === 'shipping_price_changed'
         ? 409
