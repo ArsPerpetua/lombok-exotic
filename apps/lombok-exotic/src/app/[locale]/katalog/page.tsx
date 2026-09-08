@@ -150,12 +150,14 @@ export default async function CatalogPage({
                       </span>
                     )}
                   </div>
-                  <p className="mt-3 text-sm font-medium">{p.name}</p>
                   {p.categoryName && (
-                    <p className="text-xs text-[var(--color-muted)]">{p.categoryName}</p>
+                    <p className="mt-3 text-[11px] uppercase tracking-wider text-[var(--color-turmeric)]">
+                      {p.categoryName}
+                    </p>
                   )}
+                  <p className="font-display mt-0.5 text-base leading-snug">{p.name}</p>
                   {p.priceFromIdr != null && (
-                    <p className="mt-1 text-sm">
+                    <p className="mt-1 text-sm tabular-nums">
                       <span className="text-[var(--color-muted)]">{t('from')} </span>
                       {formatIdr(p.priceFromIdr)}
                     </p>
