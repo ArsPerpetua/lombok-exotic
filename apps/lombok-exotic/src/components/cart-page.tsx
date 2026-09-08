@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { formatIdr } from '@lombok-exotic/core/money';
 import { Link } from '@/i18n/navigation';
+import { IkatBand } from '@/components/ikat-band';
 import {
   type CartActionResult,
   removeCartItemAction,
@@ -51,10 +52,11 @@ export function CartPageClient({
   if (cart.lines.length === 0) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-20 text-center">
+        <IkatBand className="mx-auto mb-8 w-24" />
         <p className="text-[var(--color-muted)]">{labels.empty}</p>
         <Link
           href="/katalog"
-          className="mt-6 inline-block rounded bg-brand px-5 py-2 text-brand-foreground"
+          className="mt-6 inline-block rounded bg-brand px-5 py-2.5 font-medium text-brand-foreground"
         >
           {labels.browse}
         </Link>
