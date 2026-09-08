@@ -22,7 +22,7 @@ export default async function TrackPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      <h1 className="font-display text-3xl">{t('title')}</h1>
       <p className="mt-2 text-[var(--color-muted)]">{t('lead')}</p>
 
       <TrackForm

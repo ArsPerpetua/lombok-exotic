@@ -56,7 +56,7 @@ export default async function OrderConfirmationPage({
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
       <p className="text-sm text-[var(--color-muted)]">{t('orderNumber')}</p>
-      <h1 className="text-2xl font-semibold">{order.orderNumber}</h1>
+      <h1 className="font-display text-3xl">{order.orderNumber}</h1>
 
       <p className={`mt-2 font-medium ${STATUS_TONE[order.status] ?? ''}`}>{statusLabel}</p>
       {order.status === 'pending_payment' && (

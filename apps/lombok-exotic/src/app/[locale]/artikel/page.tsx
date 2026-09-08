@@ -67,7 +67,7 @@ export default async function ArticlesPage({ params }: { params: Promise<{ local
                     {fmtDate(a.publishedAt, locale)}
                     {a.author ? ` · ${a.author}` : ''}
                   </p>
-                  <h2 className="group-hover:text-brand mt-1 text-lg font-semibold">{a.title}</h2>
+                  <h2 className="font-display group-hover:text-brand mt-1 text-xl">{a.title}</h2>
                   {a.excerpt && (
                     <p className="mt-1 line-clamp-2 text-sm text-[var(--color-muted)]">
                       {a.excerpt}

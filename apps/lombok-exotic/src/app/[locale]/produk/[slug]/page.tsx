@@ -112,7 +112,7 @@ export default async function ProductPage({ params }: { params: Promise<RoutePar
         )}
       </nav>
 
-      <h1 className="mt-2 text-2xl font-semibold sm:text-3xl">{product.name}</h1>
+      <h1 className="font-display mt-2 text-3xl sm:text-4xl">{product.name}</h1>
       {product.shortDescription && (
         <p className="mt-2 max-w-2xl text-[var(--color-muted)]">{product.shortDescription}</p>
       )}
@@ -152,7 +152,7 @@ export default async function ProductPage({ params }: { params: Promise<RoutePar
 
       {bundle && (
         <section className="mt-12 rounded border p-6">
-          <h2 className="text-lg font-semibold">{t('bundleContents')}</h2>
+          <h2 className="font-display text-xl">{t('bundleContents')}</h2>
           <ul className="mt-4 divide-y">
             {bundle.components.map((c) => (
               <li key={c.variantId} className="flex items-center gap-4 py-3">
@@ -194,7 +194,7 @@ export default async function ProductPage({ params }: { params: Promise<RoutePar
 
       {product.story && (
         <section className="mt-12 max-w-2xl">
-          <h2 className="text-lg font-semibold">{t('story')}</h2>
+          <h2 className="font-display text-xl">{t('story')}</h2>
           <p className="mt-2 whitespace-pre-line text-[var(--color-muted)]">{product.story}</p>
         </section>
       )}

@@ -83,7 +83,7 @@ function Result({ order, t }: { order: TrackedOrder; t: TrackLabels }) {
   return (
     <div className="mt-10 max-w-2xl border-t pt-8">
       <p className="text-sm text-[var(--color-muted)]">{t.orderNumber}</p>
-      <h2 className="text-xl font-semibold">{order.orderNumber}</h2>
+      <h2 className="font-display text-2xl">{order.orderNumber}</h2>
       <p className="mt-1 font-medium text-brand">
         {t.statusLabels[order.status] ?? order.status}
       </p>

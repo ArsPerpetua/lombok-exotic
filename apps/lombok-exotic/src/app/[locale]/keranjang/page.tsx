@@ -24,7 +24,7 @@ export default async function CartPage({ params }: { params: Promise<{ locale: s
   return (
     <div>
       <div className="mx-auto max-w-5xl px-6 pt-12">
-        <h1 className="text-2xl font-semibold">{t('title')}</h1>
+        <h1 className="font-display text-3xl">{t('title')}</h1>
       </div>
       <CartPageClient
         initial={cart}

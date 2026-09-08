@@ -34,7 +34,7 @@ export default async function CheckoutPage({
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="text-2xl font-semibold">{t('title')}</h1>
+      <h1 className="font-display text-3xl">{t('title')}</h1>
 
       <ul className="mt-6 divide-y rounded border text-sm">
         {cart.lines.map((l) => (
