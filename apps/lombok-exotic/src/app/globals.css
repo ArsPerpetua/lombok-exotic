@@ -49,6 +49,25 @@ html {
   color-scheme: light;
 }
 
+/* Warm every default hairline (Tailwind's bare `border` ships cool gray-200)
+ * and give interactive elements one consistent focus ring. */
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-line);
+  }
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-turmeric-fill);
+    outline-offset: 2px;
+  }
+}
+
 body {
   background: var(--color-bg);
   color: var(--color-fg);
