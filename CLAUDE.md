@@ -22,6 +22,14 @@ zero changes to `core`.
 - better-auth is pinned to `1.7.2` (not `^`). Bump deliberately.
 - CI runs typecheck + lint + test on push (no `format:check`).
 
+## Design System
+
+Always read `DESIGN.md` before making any visual or UI decision. Font choices,
+colors, spacing, radius, and aesthetic direction are defined there — do not
+deviate without explicit user approval. In QA / design-review mode, flag any
+code that doesn't match `DESIGN.md`. Tokens live in `apps/lombok-exotic/src/app/globals.css`
+and mirror `client.config.ts` theme.
+
 ## Skill routing
 
 When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.
