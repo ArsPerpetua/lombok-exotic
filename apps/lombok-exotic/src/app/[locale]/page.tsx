@@ -6,6 +6,7 @@ import { tr } from '@lombok-exotic/core/config';
 import { getCategories, getFeaturedProducts } from '@/lib/catalog';
 import { getLatestArticles } from '@/lib/content';
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
+import { IkatBand } from '@/components/ikat-band';
 
 // ISR: storefront data may be up to 5 min stale; admin edits also revalidate on demand.
 export const revalidate = 300;
@@ -32,8 +33,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ── Hero (kept) ─────────────────────────────────────────────────── */}
-      <section className="bg-black text-white">
+      {/* ── Hero ────────────────────────────────────────────────────────── */}
+      <section className="bg-[var(--color-indigo-deep)] text-white">
         <div className="mx-auto max-w-5xl px-6 py-20 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -43,7 +44,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             height={229}
             className="mx-auto w-full max-w-md"
           />
-          <h1 className="mx-auto mt-8 max-w-2xl text-2xl font-semibold sm:text-4xl">
+          <h1 className="font-display mx-auto mt-8 max-w-2xl text-3xl font-medium sm:text-5xl">
             {t('heroTitle')}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-white/80">{t('heroSubtitle')}</p>
@@ -64,6 +65,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             )}
           </div>
         </div>
+        <IkatBand tall />
       </section>
 
       {/* ── Trust strip ─────────────────────────────────────────────────── */}
@@ -88,7 +90,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <li key={c.id}>
                 <Link
                   href={`/katalog?kategori=${c.slug}`}
-                  className="group flex aspect-square flex-col justify-between rounded-lg bg-black p-4 text-white transition-colors hover:bg-brand"
+                  className="group flex aspect-square flex-col justify-between bg-[var(--color-indigo)] p-4 text-white transition-colors hover:bg-brand"
                 >
                   <span className="text-[11px] uppercase tracking-wider text-white/50">
                     {c.productCount} {t('itemsWord')}
@@ -165,7 +167,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* ── Why us (differentiators, dark) ──────────────────────────────── */}
-      <section className="bg-black py-16 text-white">
+      <section className="bg-[var(--color-timber)] py-16 text-white">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="font-display text-2xl text-brand sm:text-3xl">{t('whyTitle')}</h2>
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
@@ -189,7 +191,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </div>
             <Link
               href="/pesanan-rombongan"
-              className="shrink-0 self-start rounded bg-black px-6 py-3 font-medium text-white hover:bg-brand md:self-auto"
+              className="shrink-0 self-start rounded bg-[var(--color-indigo)] px-6 py-3 font-medium text-white hover:bg-brand md:self-auto"
             >
               {t('groupCtaFull')}
             </Link>
@@ -234,7 +236,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* ── Contact band ────────────────────────────────────────────────── */}
-      <section className="bg-black py-14 text-white">
+      <section className="bg-[var(--color-timber)] py-14 text-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 text-center">
           <h2 className="font-display text-2xl sm:text-3xl">{t('contactTitle')}</h2>
           <p className="mx-auto max-w-lg text-white/70">{t('contactBody')}</p>

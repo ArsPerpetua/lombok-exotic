@@ -21,9 +21,9 @@ export default function GlobalNotFound() {
           gap: '1.25rem',
           padding: '2rem',
           textAlign: 'center',
-          background: '#0a0a0a',
-          color: '#fff',
-          fontFamily: 'Inter, system-ui, sans-serif',
+          background: '#211c18',
+          color: '#ede6d8',
+          fontFamily: '"Plus Jakarta Sans", system-ui, sans-serif',
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -34,16 +34,16 @@ export default function GlobalNotFound() {
           height={97}
           style={{ width: '100%', maxWidth: 220, height: 'auto' }}
         />
-        <p style={{ fontSize: '3rem', fontWeight: 700, margin: 0, color: '#c81e1e' }}>404</p>
+        <p style={{ fontSize: '3rem', fontWeight: 700, margin: 0, color: '#d8a13a' }}>404</p>
         <p style={{ margin: 0, fontSize: '1.125rem' }}>Halaman yang kamu cari tidak ada.</p>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
           <Link
             href="/id"
             style={{
-              background: '#c81e1e',
-              color: '#fff',
+              background: '#9e2b25',
+              color: '#fdf4f2',
               padding: '0.75rem 1.5rem',
-              borderRadius: 6,
+              borderRadius: 2,
               textDecoration: 'none',
               fontWeight: 500,
             }}
@@ -53,10 +53,10 @@ export default function GlobalNotFound() {
           <Link
             href="/id/katalog"
             style={{
-              border: '1px solid rgba(255,255,255,0.4)',
-              color: '#fff',
+              border: '1px solid rgba(237,230,216,0.4)',
+              color: '#ede6d8',
               padding: '0.75rem 1.5rem',
-              borderRadius: 6,
+              borderRadius: 2,
               textDecoration: 'none',
               fontWeight: 500,
             }}

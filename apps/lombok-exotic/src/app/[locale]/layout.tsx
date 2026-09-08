@@ -8,6 +8,7 @@ import { clientConfig } from '../../../client.config';
 import { tr } from '@lombok-exotic/core/config';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+import { fraunces, jakarta } from '../fonts';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -42,7 +43,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className={`${fraunces.variable} ${jakarta.variable}`}>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
           <SiteHeader locale={locale} />

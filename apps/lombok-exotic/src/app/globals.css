@@ -1,24 +1,48 @@
 @import 'tailwindcss';
 
 /*
- * Design tokens. Values mirror client.config.ts theme — kept in CSS too so the
- * first paint is correct before JS. A second client overrides these here.
+ * Design tokens — see DESIGN.md. Palette is drawn from Lombok natural dyes
+ * (nila / mengkudu / kunyit / kapur / arang). Values mirror client.config.ts
+ * theme and are kept in CSS so the first paint is correct before JS. A second
+ * client overrides these here.
  */
 :root {
-  --color-brand: #c81e1e;
-  --color-brand-foreground: #ffffff;
-  --color-bg: #ffffff;
-  --color-fg: #0a0a0a;
-  --color-muted: #6b7280;
-  --font-display: 'Cinzel', Georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --color-brand: #9e2b25; /* mengkudu (morinda) — accent, CTAs, sale */
+  --color-brand-foreground: #fdf4f2;
+  --color-indigo: #1e3a5f; /* nila — primary ink, headings, primary buttons */
+  --color-indigo-deep: #14293f; /* hero / dark-panel ground */
+  --color-bg: #f6f1e7; /* kapur (limewash) — warm page background */
+  --color-fg: #26211c; /* warm near-black — body text */
+  --color-muted: #6b635a; /* warm taupe */
+  --color-accent: #ede3d0; /* sunk / inset surfaces */
+  --color-line: #d9ceb8; /* warm hairline */
+  --color-turmeric: #a8701a; /* kunyit — label text, kickers (text-safe) */
+  --color-turmeric-fill: #d8a13a; /* kunyit — underlines, motif, large fills */
+  --color-timber: #211c18; /* arang — darkest sections (replaces pure black) */
+
+  /* next/font exposes --font-fraunces / --font-jakarta on <html>; compose here
+   * so nothing overrides the :root fallback stack. */
+  --font-display: var(--font-fraunces), 'Fraunces', Georgia, serif;
+  --font-sans: var(--font-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
 @theme inline {
   --color-brand: var(--color-brand);
   --color-brand-foreground: var(--color-brand-foreground);
+  --color-indigo: var(--color-indigo);
+  --color-timber: var(--color-timber);
+  --color-accent: var(--color-accent);
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
+
+  /* Squared corners — craft objects photograph better in hard rectangles.
+   * Keeps rounded-full (9999px) for badges/pills. */
+  --radius-sm: 2px;
+  --radius: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 3px;
+  --radius-2xl: 3px;
 }
 
 html {
@@ -34,6 +58,21 @@ body {
 
 .font-display {
   font-family: var(--font-display);
+  letter-spacing: -0.012em;
+}
+
+/* Sasak tenun ikat lattice — the brand signature. Layered diagonal repeats
+ * approximate the warp-resist diamond lattice; the slight blur mimics the
+ * feathered dye edge that ikat is known for. Use as a section divider and at
+ * the hero base / footer. */
+.ikat-band {
+  height: 26px;
+  background:
+    repeating-linear-gradient(45deg, var(--color-brand) 0 6px, transparent 6px 22px),
+    repeating-linear-gradient(-45deg, var(--color-indigo) 0 6px, transparent 6px 22px),
+    repeating-linear-gradient(90deg, var(--color-turmeric-fill) 0 2px, transparent 2px 11px),
+    var(--color-accent);
+  filter: blur(0.4px) contrast(1.05);
 }
 
 /* Long-form article / static-page body rendered from Markdown. */

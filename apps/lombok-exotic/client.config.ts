@@ -26,16 +26,18 @@ export const clientConfig = defineClientConfig({
     city: 'Lombok Barat, Nusa Tenggara Barat',
   },
   social: {},
+  // Design tokens — see DESIGN.md. Palette drawn from Lombok natural dyes.
+  // The rendered source of truth is globals.css; these mirror it.
   theme: {
-    primary: '#c81e1e',
-    primaryForeground: '#ffffff',
-    accent: '#e5e7eb',
-    background: '#ffffff',
-    foreground: '#0a0a0a',
+    primary: '#9e2b25', // mengkudu (morinda)
+    primaryForeground: '#fdf4f2',
+    accent: '#ede3d0', // sunk / inset surfaces
+    background: '#f6f1e7', // kapur (limewash)
+    foreground: '#26211c', // warm near-black
     logoDark: '/brand/logo-dark.png',
     logoLight: '/brand/logo-light.png',
-    fontDisplay: '"Cinzel", Georgia, serif',
-    fontSans: '"Inter", system-ui, sans-serif',
+    fontDisplay: '"Fraunces", Georgia, serif',
+    fontSans: '"Plus Jakarta Sans", system-ui, sans-serif',
   },
   features: {
     groupPreorder: true,

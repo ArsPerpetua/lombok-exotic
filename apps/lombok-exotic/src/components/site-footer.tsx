@@ -6,7 +6,7 @@ export async function SiteFooter({ locale }: { locale: string }) {
   const t = await getTranslations('footer');
   const year = new Date().getFullYear();
   return (
-    <footer className="border-t bg-black text-white/70">
+    <footer className="border-t bg-[var(--color-timber)] text-white/70">
       <div className="mx-auto max-w-6xl px-6 py-10 text-sm">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
