@@ -43,8 +43,17 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={`${fraunces.variable} ${jakarta.variable}`}>
+    <html
+      lang={locale}
+      className={`${fraunces.variable} ${jakarta.variable}`}
+      suppressHydrationWarning
+    >
       <body className="flex min-h-screen flex-col">
+        {/* Gate reveal/entrance animations to JS synchronously, before first
+            paint, so nothing flashes visible-then-hidden. */}
+        <script
+          dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }}
+        />
         <NextIntlClientProvider>
           <SiteHeader locale={locale} />
           <main className="flex-1">{children}</main>

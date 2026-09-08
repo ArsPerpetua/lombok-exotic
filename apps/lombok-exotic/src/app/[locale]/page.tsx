@@ -54,13 +54,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div
           id="hero-ikat"
           aria-hidden
-          className="ikat-field pointer-events-none absolute -right-[6%] -top-[8%] z-0 h-[116%] w-[min(60%,720px)] opacity-90 [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)]"
+          className="ikat-field hero-field-anim pointer-events-none absolute -right-[6%] -top-[8%] z-0 h-[116%] w-[min(60%,720px)] opacity-90 [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)]"
         />
         <div
           aria-hidden
           className="absolute inset-0 z-[1] bg-[linear-gradient(105deg,var(--color-indigo-deep)_36%,transparent_80%)]"
         />
-        <div className="relative z-[2] mx-auto w-full max-w-6xl px-6 pb-[clamp(3rem,7vw,5rem)] pt-[clamp(7rem,14vw,10rem)]">
+        <div className="hero-anim relative z-[2] mx-auto w-full max-w-6xl px-6 pb-[clamp(3rem,7vw,5rem)] pt-[clamp(7rem,14vw,10rem)]">
           <p className="eyebrow eyebrow--on-dark">{tr(clientConfig.tagline, locale)}</p>
           <h1 className="font-display mt-6 max-w-[15ch] text-[clamp(2.6rem,2rem+6vw,6rem)] font-light leading-[1.02]">
             {t('heroTitle')}
@@ -117,7 +117,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               {t('viewAll')}
             </Link>
           </div>
-          <ul className="reveal grid grid-cols-2 gap-1.5 lg:grid-cols-3 [&>li]:min-h-[190px]">
+          <ul className="stagger grid grid-cols-2 gap-1.5 lg:grid-cols-3 [&>li]:min-h-[190px]">
             {categories.map((c, i) => (
               <li key={c.id} className={i === 0 ? 'col-span-2 lg:row-span-2' : ''}>
                 <Link
@@ -141,7 +141,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </section>
       )}
 
-      <IkatBand className="ikat-band--xl" />
+      <IkatBand className="ikat-band--xl reveal-wipe" />
 
       {/* ── Featured products (scale contrast) ──────────────────────────── */}
       <section className="bg-[var(--color-panel,#fdfbf5)] py-[clamp(4rem,9vw,7rem)]">
@@ -176,7 +176,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   bundleLabel={t('bundleBadge')}
                 />
               )}
-              <div className="grid gap-8">
+              <div className="stagger grid gap-8">
                 {railProducts.map((p, i) => (
                   <ProductCard
                     key={p.id}
@@ -308,7 +308,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      <IkatBand className="ikat-band--xl" />
+      <IkatBand className="ikat-band--xl reveal-wipe" />
     </>
   );
 }

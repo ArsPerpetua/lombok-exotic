@@ -3,17 +3,21 @@
 import { useEffect } from 'react';
 
 /**
- * One mount per page. Reveals `.reveal` elements as they scroll into view
- * (fade + rise) and drives the hero ikat-field parallax (`#hero-ikat`).
- * Elements already near the viewport when JS runs are revealed with no flash;
- * everything is force-revealed after 2.2s as a safety net. Fully inert under
+ * One mount per page. Reveals `.reveal` / `.stagger` / `.reveal-wipe` elements
+ * as they scroll into view, drives the hero ikat-field parallax (`#hero-ikat`),
+ * and toggles `.scrolled` on <html> so the header can condense. Elements already
+ * near the viewport when JS runs are revealed with no flash. Everything is
+ * force-revealed after 2.2s as a safety net. Fully inert under
  * `prefers-reduced-motion`.
  */
 export function ScrollReveal() {
   useEffect(() => {
     const root = document.documentElement;
+    root.classList.add('js');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal'));
+    const els = Array.from(
+      document.querySelectorAll<HTMLElement>('.reveal, .stagger, .reveal-wipe'),
+    );
 
     // Reveal what's already visible before gating, so it never flashes.
     els.forEach((el) => {
@@ -21,7 +25,6 @@ export function ScrollReveal() {
         el.classList.add('reveal-in');
       }
     });
-    root.classList.add('js');
 
     let io: IntersectionObserver | undefined;
     const pending = els.filter((el) => !el.classList.contains('reveal-in'));
@@ -44,7 +47,7 @@ export function ScrollReveal() {
 
     const safety = window.setTimeout(() => {
       document
-        .querySelectorAll('.reveal:not(.reveal-in)')
+        .querySelectorAll('.reveal:not(.reveal-in), .stagger:not(.reveal-in), .reveal-wipe:not(.reveal-in)')
         .forEach((el) => el.classList.add('reveal-in'));
     }, 2200);
 
@@ -53,12 +56,14 @@ export function ScrollReveal() {
     const onScroll = () => {
       if (raf) return;
       raf = window.requestAnimationFrame(() => {
-        const y = Math.min(window.scrollY, 900);
-        if (pat) pat.style.transform = `translateY(${y * 0.12}px) scale(1.02)`;
+        const sy = window.scrollY;
+        root.classList.toggle('scrolled', sy > 40);
+        if (pat && !reduce) pat.style.transform = `translateY(${Math.min(sy, 900) * 0.12}px) scale(1.02)`;
         raf = 0;
       });
     };
-    if (pat && !reduce) window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     return () => {
       io?.disconnect();
